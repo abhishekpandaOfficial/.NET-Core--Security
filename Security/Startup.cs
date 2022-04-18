@@ -27,7 +27,21 @@ namespace Security
             {
                 options.Cookie.Name = "MyCookieAuth";
                 options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
             });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Settings", "Admin"));
+
+                options.AddPolicy("MustBelongToHRDepartment", policy =>
+                    policy.RequireClaim("Department", "HR"));
+            });
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("MustBelongToAdminDepartment", policy =>
+            //        policy.RequireClaim("Settings", "Admin"));
+            //});
             services.AddRazorPages();
         }
 
