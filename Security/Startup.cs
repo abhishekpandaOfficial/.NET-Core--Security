@@ -63,7 +63,7 @@ namespace Security
             app.UseStaticFiles();
             
             app.UseRouting();
-            // Responsible for calling the AUthentication Handler 
+            // Responsible for calling the Authentication Handler 
              app.UseAuthentication();
             
 
