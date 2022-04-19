@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Security.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +30,7 @@ namespace Security
                 options.Cookie.Name = "MyCookieAuth";
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
             });
 
             services.AddAuthorization(options =>
@@ -36,12 +39,18 @@ namespace Security
 
                 options.AddPolicy("MustBelongToHRDepartment", policy =>
                     policy.RequireClaim("Department", "HR"));
+
+                options.AddPolicy("HRManagerOnly", policy => policy.RequireClaim("Department", "HR")
+                 .RequireClaim("HRManager", "HM")
+                 .Requirements.Add(new HRManagerProbationRequirement(3)));
             });
             //services.AddAuthorization(options =>
             //{
             //    options.AddPolicy("MustBelongToAdminDepartment", policy =>
             //        policy.RequireClaim("Settings", "Admin"));
             //});
+
+            services.AddSingleton<IAuthorizationHandler, HRManagerProbationRequirementHandler>();
             services.AddRazorPages();
         }
 

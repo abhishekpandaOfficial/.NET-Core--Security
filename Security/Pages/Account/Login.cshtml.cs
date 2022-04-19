@@ -30,7 +30,9 @@ namespace Security.Pages.Account
                     new Claim(ClaimTypes.Name,"admin"),
                     new Claim(ClaimTypes.Email,"admin@gmail.com"),
                     new Claim("Department","HR"),
-                    new Claim("Settings","Admin")
+                    new Claim("Settings","Admin"),
+                    new Claim("HRManagerOnly","HM"),
+                    new Claim("EmploymentDate","2022-02-20")
                 };
                     // ---- Identity -----------
                     var identity = new ClaimsIdentity(claims, "MyCookieAuth");
@@ -39,8 +41,14 @@ namespace Security.Pages.Account
                     // ------- Now our Security context is under "claimsPrincipal" ------
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
 
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = Credential.RememberMe
+                    };
+
+
                     // ------- Now we want to store in Cookie while signin  ------
-                    await HttpContext.SignInAsync("MyCookieAuth", claimsPrincipal);
+                    await HttpContext.SignInAsync("MyCookieAuth", claimsPrincipal, authProperties);
                     return RedirectToPage("/index");
                 }
             }
@@ -57,5 +65,8 @@ namespace Security.Pages.Account
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Display(Name ="Remember Me")]
+        public bool RememberMe { get; set; }
     }
 }

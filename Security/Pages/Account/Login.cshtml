@@ -33,6 +33,13 @@
                 </div>
                 <span class="text-danger" asp-validation-for="Credential.Password"></span>
                 </div>
+                <div class="row form-check mb-2">
+                    <div class="col-2">
+                           <input type="checkbox" asp-for="Credential.RememberMe" 
+                           class="form-check-input" />
+                            <label class="form-check-label" asp-for="Credential.RememberMe"></label>
+                       </div>
+                </div>
 
                   @*-- Submit Button --*@
                   <div class="form-group row">
